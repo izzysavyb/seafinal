@@ -1,21 +1,27 @@
 from app.core.logger import logger
 from sqlalchemy.orm import Session
 from app.database.models import Asset
+from app.schemas.asset import AssetCreate
 
 def create_asset(
-        database: Session,
-        asset_data
+        db: Session,
+        asset_data: AssetCreate,
+        owner_id: int
 ):
     try:  
         asset = Asset(
-            **asset_data.model_dump()
+            name=asset_data.name,
+            category=asset_data.category,
+            serial_number=asset_data.serial_number,
+            status=asset_data.status,
+            owner_id=owner_id 
         )
         logger.info(
             f"Creating asset: {asset_data.serial_number}"
         )
-        database.add(asset)
-        database.commit()
-        database.refresh(asset)
+        db.add(asset)
+        db.commit()
+        db.refresh(asset)
         logger.info(
             f"Asset created successfully: {asset.id}"
         )
@@ -24,27 +30,27 @@ def create_asset(
         logger.error(
         f"Asset creation failed: {e}"
     )
-        database.rollback
-
+        db.rollback()
+        raise
 def get_assets(
-        database: Session
+        db: Session
 ):
     
-    return database.query(Asset).all()
+    return db.query(Asset).all()
 
 def get_asset(
-        database: Session,
+        db: Session,
         asset_id: int
 ):
     
     return(
-        database.query(Asset)
+        db.query(Asset)
         .filter(Asset.id == asset_id)
         .first()
     )
 
 def update_asset(
-        database: Session,
+        db: Session,
         asset: Asset,
         update_data: dict
 ):
@@ -55,8 +61,8 @@ def update_asset(
         for key, value in update_data.items():
             setattr(asset, key, value)
 
-            database.commit()
-            database.refresh(asset)
+            db.commit()
+            db.refresh(asset)
             logger.info(
             f"Asset updated successfully: {asset.id}"
                 )
@@ -67,11 +73,12 @@ def update_asset(
         f"Asset update failed: {e}"
         )
 
-        database.rollback
+        db.rollback()
+        raise
 
 
 def delete_asset(
-        database: Session,
+        db: Session,
         asset: Asset
 ):
     
@@ -79,8 +86,8 @@ def delete_asset(
         logger.info(
         f"Deleting asset: {asset.id}"
         )
-        database.delete(asset)
-        database.commit()
+        db.delete(asset)
+        db.commit()
         logger.info(
         f"Asset deleted successfully: {asset.id}"
         )
@@ -90,4 +97,5 @@ def delete_asset(
         f"Asset deletion failed: {e}"
         )   
 
-        database.rollback
+        db.rollback()
+        raise

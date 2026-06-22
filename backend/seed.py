@@ -41,6 +41,7 @@ for i in range(1, 11):
             name=f"Laptop {i}",
             category="Laptop",
             serial_number=f"SN-{1000+i}",
+            status="Active",
             owner_id=users[i % len(users)].id
         )
     )

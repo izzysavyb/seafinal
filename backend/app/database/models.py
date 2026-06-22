@@ -23,7 +23,8 @@ class Asset(Base):
     name: Mapped[str] = mapped_column(String(100), nullable=False)
     category: Mapped[str] = mapped_column(String(50), nullable=False)
     serial_number: Mapped[str] = mapped_column(String(100), unique=True, nullable=False)
-    is_active: Mapped[bool] = mapped_column(Boolean, default=True)
+    status: Mapped[str] = mapped_column(String(255), nullable=False)
+    
 
     owner_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
 

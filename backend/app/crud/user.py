@@ -1,32 +1,36 @@
 from fastapi import HTTPException
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 from app.database.models import User
 from app.core.security import hash_password
 from app.core.logger import logger
 
 def get_user_by_username(
-        database: Session,
+        db: Session,
         username: str
 ):
-    return (
-        database.query(User)
-        .filter(User.username == username)
-        .first()
-    )
+    return db.execute(
+            select(User).where(
+                User.username == username
+            )
+     
+    ).scalar_one_or_none()
 
 def get_user_by_email(
-        database: Session,
+        db: Session,
         email: str
 ):
-    return (
-        database.query(User)
-        .filter(User.email == email)
-        .first()
-    )
+      return db.execute(
+            select(User).where(
+                User.email == email
+            )
+     
+    ).scalar_one_or_none()
+
 
 def create_user(
         
-        database: Session,
+        db: Session,
         username: str,
         email: str,
         password: str,
@@ -42,9 +46,9 @@ def create_user(
         logger.info(
             f"Creating user: {username}"
         )
-        database.add(user)
-        database.commit()
-        database.refresh(user)
+        db.add(user)
+        db.commit()
+        db.refresh(user)
         logger.info(
             f"User created successfully: {user.id}"
         )
@@ -55,7 +59,7 @@ def create_user(
         logger.error(
             f"Failed to create user: {e}"
         )
-        database.rollback()
+        db.rollback()
 
         raise HTTPException(
             status_code=500,
@@ -64,7 +68,7 @@ def create_user(
         )
 
 def update_user(
-        database: Session,
+        db: Session,
         user: User,
         update_data: dict
 ):
@@ -72,13 +76,13 @@ def update_user(
     for key, value in update_data.items():
         setattr(user, key, value)
 
-    database.commit()
-    database.refresh(user)
+    db.commit()
+    db.refresh(user)
 
 def delete_user(
-    database: Session,
+    db: Session,
     user: User
 ):
     
-    database.delete(user)
-    database.commit()
+    db.delete(user)
+    db.commit()
