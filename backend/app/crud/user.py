@@ -67,18 +67,32 @@ def create_user(
             
         )
 
-def update_user(
-        db: Session,
-        user: User,
-        update_data: dict
-):
-    
-    for key, value in update_data.items():
-        setattr(user, key, value)
+def update_user(db, user_id, user_data):
+    user = db.execute(
+        select(User).where(User.id == user_id)
+    ).scalar_one_or_none()
+
+    if not user:
+        return None
+
+    if user_data.username:
+        user.username = user_data.username
+
+    if user_data.email:
+        user.email = user_data.email
+
+    if user_data.password:
+        user.password = hash_password(
+            user_data.password
+        )
+
+    if user_data.role:
+        user.role = user_data.role
 
     db.commit()
     db.refresh(user)
 
+    return user
 def delete_user(
     db: Session,
     user: User
@@ -86,3 +100,17 @@ def delete_user(
     
     db.delete(user)
     db.commit()
+
+
+def get_all_users(db):
+    statement = select(User)
+
+    return db.execute(
+        statement).scalars().all()
+
+def get_user_by_id(db, user_id):
+    return db.execute(
+        select(User).where(
+            User.id == user_id
+        )
+    ).scalar_one_or_none()

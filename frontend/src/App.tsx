@@ -1,10 +1,12 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-import Login from './pages/login';
-import Dashboard from './pages/dashboard';
-import ProtectedRoute from './components/ProtectedRoute';
-import Assets from './pages/assets';
-import CreateAsset from './pages/createasset';
+import Login from "./pages/login";
+import Dashboard from "./pages/dashboard";
+import ProtectedRoute from "./components/ProtectedRoute";
+import Assets from "./pages/assets";
+import CreateAsset from "./pages/createasset";
+import Users from "./pages/users";
+import EditUser from "./pages/edituser";
 
 export default function App() {
   return (
@@ -31,8 +33,24 @@ export default function App() {
         <Route
           path="/assets/create-asset"
           element={
-            <ProtectedRoute allowedRoles="admin">
+            <ProtectedRoute>
               <CreateAsset />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/users"
+          element={
+            <ProtectedRoute allowedRoles="admin">
+              <Users />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/users/edit-user/:id"
+          element={
+            <ProtectedRoute>
+              <EditUser />
             </ProtectedRoute>
           }
         />

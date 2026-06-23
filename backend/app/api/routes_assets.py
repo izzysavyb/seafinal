@@ -12,7 +12,7 @@ def list_assets(
     db: Session = Depends(get_db),
     current_user = Depends(get_current_user)
 ):
-    return get_assets(db)
+    return get_assets(db, current_user)
 
 @router.get("/{asset_id}")
 def get_asset_by_id(
@@ -97,11 +97,11 @@ def delete_asset_route(
             detail="Asset not found"
         )
 
-    delete_asset(
+    return delete_asset(
         db,
-        asset
+        asset_id,
+        current_user
     )
 
-    return {
-        "message": "Asset deleted"
-    }
+
+ 

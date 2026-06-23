@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.api import ( routes_assets, routes_auth)
+from app.api import ( routes_assets, routes_auth, routes_users)
 from app.database.database import ( engine ,Base)
 app = FastAPI()
 from app.database import models
@@ -35,4 +35,9 @@ app.include_router(
     tags=["Assets"]
 )
 
+app.include_router(
+    routes_users.router,
+    prefix="/users",
+    tags=["Users"]
+)
 

@@ -1,3 +1,6 @@
+from fastapi import HTTPException
+from sqlalchemy import select
+
 from app.core.logger import logger
 from sqlalchemy.orm import Session
 from app.database.models import Asset
@@ -33,10 +36,19 @@ def create_asset(
         db.rollback()
         raise
 def get_assets(
-        db: Session
+        db: Session,
+        current_user: dict
 ):
     
-    return db.query(Asset).all()
+    if current_user["role"] == "admin":
+        statement = select(Asset)
+        
+    else: 
+        statement = (
+            select(Asset).where(Asset.owner_id == current_user["id"])
+        )
+    result = db.execute(statement)
+    return result.scalars().all()
 
 def get_asset(
         db: Session,
@@ -78,24 +90,38 @@ def update_asset(
 
 
 def delete_asset(
-        db: Session,
-        asset: Asset
+    db: Session,
+    asset_id: int,
+    current_user: dict
 ):
-    
-    try:
-        logger.info(
-        f"Deleting asset: {asset.id}"
-        )
-        db.delete(asset)
-        db.commit()
-        logger.info(
-        f"Asset deleted successfully: {asset.id}"
-        )
-    
-    except Exception as e:
-        logger.error(
-        f"Asset deletion failed: {e}"
-        )   
+    statement = (
+        select(Asset)
+        .where(Asset.id == asset_id)
+    )
 
-        db.rollback()
-        raise
+    result = db.execute(statement)
+
+    asset = result.scalar_one_or_none()
+
+    if not asset:
+        raise HTTPException(
+            status_code=404,
+            detail="Asset not found"
+        )
+
+    if (
+        current_user["role"] != "admin"
+        and asset.owner_id != current_user["id"]
+    ):
+        raise HTTPException(
+            status_code=403,
+            detail="Not authorised"
+        )
+
+    db.delete(asset)
+    db.commit()
+
+    return {
+        "message":
+        "Asset deleted"
+    }

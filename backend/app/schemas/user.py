@@ -30,4 +30,5 @@ class UserOut(BaseModel):
 class UserUpdate(BaseModel):
     username: str | None = None
     email: EmailStr | None = None
+    password: str | None = None
     role: Literal["admin", "user"] | None = None

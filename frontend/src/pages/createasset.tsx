@@ -1,20 +1,20 @@
-import { useState } from 'react';
-import NavBar from '../components/NavBar';
+import { useState } from "react";
+import NavBar from "../components/NavBar";
 
-import { createAsset } from '../api/assets';
-import axios from 'axios';
+import { createAsset } from "../api/assets";
+import axios from "axios";
 
 export default function CreateAsset() {
-  const [name, setName] = useState('');
-  const [category, setCategory] = useState('');
-  const [serialNumber, setSerialNumber] = useState('');
-  const [status, setStatus] = useState('');
+  const [name, setName] = useState("");
+  const [category, setCategory] = useState("");
+  const [serialNumber, setSerialNumber] = useState("");
+  const [status, setStatus] = useState("");
 
   const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!name || !category || !serialNumber || !status) {
-      alert('Please fill in all fields before submitting!');
+      alert("Please fill in all fields before submitting!");
       return;
     }
 
@@ -25,14 +25,14 @@ export default function CreateAsset() {
         serial_number: serialNumber,
         status,
       });
-      alert('Asset created successfully!');
-      setName('');
-      setCategory('');
-      setSerialNumber('');
-      setStatus('');
+      alert("Asset created successfully!");
+      setName("");
+      setCategory("");
+      setSerialNumber("");
+      setStatus("");
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
-        console.log('Full error:', error.response?.data);
+        console.log("Full error:", error.response?.data);
 
         const detail = error.response?.data?.detail;
 
@@ -42,7 +42,7 @@ export default function CreateAsset() {
           alert(error.message);
         }
       } else {
-        alert('Unknown error');
+        alert("Unknown error");
       }
     }
   };
@@ -52,7 +52,7 @@ export default function CreateAsset() {
       <NavBar />
 
       <main className="min-h-screen bg-pink-50 px-8 pt-28">
-        <div className="mx-auto max-w-2xl rounded-3xl border border-pink-200 bg-white/70 p-8 backdrop-blur-md shadow-lg">
+        <div className="mx-auto max-w-2xl rounded-3xl border border-pink-200 bg-white/70 p-8 ">
           <h1 className="mb-6 text-3xl font-bold text-pink-900">
             Create Asset
           </h1>
