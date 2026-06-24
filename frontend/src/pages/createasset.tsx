@@ -105,9 +105,9 @@ export default function CreateAsset() {
                 className="w-full rounded-xl border border-pink-200 px-4 py-3 outline-none focus:border-pink-400"
               >
                 <option value="">Select status</option>
-                <option value="active">Active</option>
-                <option value="in repair">In Repair</option>
-                <option value="retired">Retired</option>
+                <option value="Active">Active</option>
+                <option value="In Repair">In Repair</option>
+                <option value="Retired">Retired</option>
               </select>
             </div>
 

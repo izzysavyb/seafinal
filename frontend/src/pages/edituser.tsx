@@ -89,8 +89,8 @@ export default function EditUser() {
                 onChange={(e) => setRole(e.target.value)}
                 className="w-full rounded-xl border px-4 py-3"
               >
-                <option value="user">User</option>
-                <option value="admin">Admin</option>
+                <option value="user">user</option>
+                <option value="admin">admin</option>
               </select>
             )}
 

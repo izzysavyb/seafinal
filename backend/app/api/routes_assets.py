@@ -4,6 +4,7 @@ from app.database.database import get_db
 from app.schemas.asset import AssetCreate, AssetUpdate
 from app.crud.assets import (create_asset, get_assets, get_asset, update_asset, delete_asset)
 from app.core.deps import ( get_current_user, require_role)
+from app.database.models import Asset
 
 router = APIRouter()
 
@@ -52,30 +53,29 @@ def update_asset_route(
     db: Session = Depends(get_db),
     current_user = Depends(get_current_user)
 ):
-    asset = get_asset(
-        db,
+    asset = db.get(
+        Asset,
         asset_id
     )
 
-    if not asset:
-        raise HTTPException(
-            status_code=404,
-            detail="Asset not found"
-        )
-    
-    if ( asset.owner_id != current_user["id"] and current_user["role"] != "admin"
-    ):
-        raise HTTPException(
-            status_code=403,
-            detail="Not authorised to update this asset"
-        )
-    return update_asset(
-        db,
-        asset,
-        asset_data.model_dump(
-            exclude_unset=True
-        )
-    )
+ 
+
+    if asset_data.name is not None:
+        asset.name = asset_data.name
+
+    if asset_data.category is not None:
+        asset.category = asset_data.category
+
+    if asset_data.status is not None:
+        asset.status = asset_data.status
+
+    if asset_data.owner_id is not None:
+        asset.owner_id = asset_data.owner_id
+
+    db.commit()
+    db.refresh(asset)
+
+    return asset
 
 @router.delete("/{asset_id}")
 def delete_asset_route(

@@ -16,3 +16,13 @@ export const getUserByID = async (id: number) => {
   const response = await api.get(`/users/${id}`);
   return response.data;
 };
+
+export const getCurrentUser = async (userId: number) => {
+  const response = await api.get(`/users/${userId}`);
+
+  return response.data;
+};
+export const deleteUser = async (userId: number) => {
+  const response = await api.delete(`/users/${userId}`);
+  return response.data;
+};

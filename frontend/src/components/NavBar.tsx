@@ -5,13 +5,13 @@ export default function NavBar() {
   const navigate = useNavigate();
   const handleLogout = () => {
     localStorage.removeItem("token");
-    navigate("/login");
+    navigate("/");
   };
 
   const role = getUserRole();
   return (
     <nav className="fixed top-6 z-50 flex w-full justify-center">
-      <div className="flex items-center gap-3 rounded-full bg-pink-400/70 backdrop-blur-md px-3 py-2 shadow-[0_8px_25px_rgba(236,72,153,0.35)] border border-pink-300">
+      <div className="flex items-center gap-3 rounded-full bg-pink-400/70 backdrop-blur-md px-3 py-2  border border-pink-300">
         <ul className="flex items-center gap-6 px-4 text-white text-sm font-medium">
           {navLinks
             .filter((link) => {

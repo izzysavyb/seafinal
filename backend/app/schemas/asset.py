@@ -17,8 +17,9 @@ class AssetCreate(BaseModel):
 
 class AssetUpdate(BaseModel):
     name: str | None = None
-    cateory: str | None = None
-    
+    category: str | None = None
+    status: str | None = None
+    owner_id: int | None = None
 
 
 class AssetOut(BaseModel):

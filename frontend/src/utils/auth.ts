@@ -36,3 +36,17 @@ export function getCurrentUser() {
     return null;
   }
 }
+
+export function getUserId() {
+  const token = localStorage.getItem("token");
+
+  if (!token) return null;
+
+  try {
+    const decoded: any = jwtDecode(token);
+
+    return decoded.id;
+  } catch {
+    return null;
+  }
+}

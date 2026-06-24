@@ -1,14 +1,18 @@
-import api from './client';
-import type { AssetTypes } from './types';
+import api from "./client";
+import type { AssetTypes } from "./types";
 
 export const getAssets = async () => {
-  const response = await api.get('/assets');
+  const response = await api.get("/assets");
 
   return response.data;
 };
+export const getAssetById = async (assetId: number) => {
+  const response = await api.get(`/assets/${assetId}`);
 
+  return response.data;
+};
 export const createAsset = async (assetData: AssetTypes) => {
-  const response = await api.post('/assets', assetData);
+  const response = await api.post("/assets", assetData);
 
   return response.data;
 };

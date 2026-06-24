@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 
 from app.database.database import get_db
 from app.core.deps import get_current_user
-from app.crud.user import get_all_users, get_user_by_id, update_user
+from app.crud.user import delete_user, get_all_users, get_user_by_id, update_user
 from app.schemas.user import UserUpdate
 
 
@@ -54,3 +54,17 @@ def get_user_route(
         db,
         user_id
     )
+
+@router.delete("/{user_id}")
+def delete_user_route(
+    user_id: int,
+    db: Session = Depends(get_db),
+    current_user=Depends(get_current_user)
+):
+    if current_user["role"] != "admin":
+        raise HTTPException(
+            status_code=403,
+            detail="Admins only"
+        )
+
+    return delete_user(db, user_id, current_user)

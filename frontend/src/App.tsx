@@ -7,12 +7,14 @@ import Assets from "./pages/assets";
 import CreateAsset from "./pages/createasset";
 import Users from "./pages/users";
 import EditUser from "./pages/edituser";
+import Account from "./pages/account";
+import EditAsset from "./pages/editasset";
 
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/login" element={<Login />} />
+        <Route path="/" element={<Login />} />
 
         <Route
           path="/dashboard"
@@ -39,6 +41,14 @@ export default function App() {
           }
         />
         <Route
+          path="/assets/edit-asset/:id"
+          element={
+            <ProtectedRoute>
+              <EditAsset />
+            </ProtectedRoute>
+          }
+        />
+        <Route
           path="/users"
           element={
             <ProtectedRoute allowedRoles="admin">
@@ -49,8 +59,16 @@ export default function App() {
         <Route
           path="/users/edit-user/:id"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute allowedRoles="admin">
               <EditUser />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/account"
+          element={
+            <ProtectedRoute>
+              <Account />
             </ProtectedRoute>
           }
         />

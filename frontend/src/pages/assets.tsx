@@ -36,7 +36,7 @@ export default function Assets() {
           <h1 className="text-3xl font-bold text-pink-900">Assets</h1>
           <p className="text-pink-600 pb-4">Manage The IT LTD Assets</p>
           <Link to={"/assets/create-asset"}>
-            <button className="rounded-full bg-white p-4 py-2 text-md">
+            <button className="rounded-full bg-white p-4 py-2 text-md transition-all duration-300 hover:text-pink-400/70 hover:scale-105">
               Create a new asset?
             </button>
           </Link>
@@ -46,11 +46,10 @@ export default function Assets() {
             <div className="bg-white p-8 rounded-xl shadow-md w-80">
               <p className="pb-4">You don't own any Assets :(</p>
               <div className="flex justify-center border-t border-pink-100 pt-3 text-gray-500 ">
-                <Link
-                  className="flex w-50 h-10 items-center justify-center rounded-full bg-pink-50 shadow-md cursor-pointer"
-                  to="/assets/create-asset"
-                >
-                  Click to Create an Asset!
+                <Link to="/assets/create-asset">
+                  <button className="rounded-full bg-pink-50 px-4 py-2 transition-all duration-300 hover:text-pink-400/70 hover:scale-105">
+                    Click to Create Assets
+                  </button>
                 </Link>
               </div>
             </div>
@@ -67,24 +66,39 @@ export default function Assets() {
                     <h3 className="text-lg font-semibold text-gray-800">
                       {asset.name}
                     </h3>
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm text-gray-500 pb-2">
                       Serial: {asset.serial_number}
                     </p>
+                    <Link to={`/assets/edit-asset/${asset.id}`}>
+                      <button className=" rounded-full bg-pink-50 px-4 py-2 ">
+                        Manage this Asset
+                      </button>{" "}
+                    </Link>
                   </div>
-
+                  <div className="border-t border-pink-100 pt-3 text-sm text-gray-500">
+                    Status: {asset.status}
+                  </div>
+                  <div className="border-t border-pink-100 pt-3 text-sm text-gray-500">
+                    Category: {asset.category}
+                  </div>
                   <div className="border-t border-pink-100 pt-3 text-sm text-gray-500">
                     Asset ID: {asset.id}
                   </div>
 
                   {role === "admin" && (
-                    <div className="flex justify-center border-t border-pink-100 pt-3 text-gray-500 ">
-                      <button
-                        className="flex w-20 h-10 items-center justify-center rounded-full bg-pink-50"
-                        onClick={() => handleDelete(asset.id)}
-                      >
-                        Delete
-                      </button>
-                    </div>
+                    <>
+                      <div className="border-t border-pink-100 pt-3 text-sm text-gray-500">
+                        Owner ID: {asset.owner_id}
+                      </div>
+                      <div className="flex justify-center border-t border-pink-100 pt-3 text-gray-500 ">
+                        <button
+                          className=" rounded-full bg-pink-50 px-4 py-2"
+                          onClick={() => handleDelete(asset.id)}
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </>
                   )}
                 </div>
               </div>

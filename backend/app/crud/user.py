@@ -1,7 +1,7 @@
 from fastapi import HTTPException
 from sqlalchemy import select
 from sqlalchemy.orm import Session
-from app.database.models import User
+from app.database.models import Asset, User
 from app.core.security import hash_password
 from app.core.logger import logger
 
@@ -93,14 +93,42 @@ def update_user(db, user_id, user_data):
     db.refresh(user)
 
     return user
-def delete_user(
-    db: Session,
-    user: User
-):
-    
+
+def delete_user(db: Session, user_id: int, current_user: dict):
+    if current_user["role"] != "admin":
+        raise HTTPException(status_code=403, detail="Admin only")
+
+    user = db.query(User).filter(
+        User.id == user_id
+    ).first()
+
+    if not user:
+        raise HTTPException(
+            status_code=404,
+            detail="User not found"
+        )
+    if user.id == current_user["id"]:
+        raise HTTPException(
+            status_code=400,
+            detail="You cannot delete yourself!"
+            
+        )
+
+    owned_assets = db.query(Asset).filter(Asset.owner_id == user.id).first()
+
+    if owned_assets:
+        raise HTTPException(
+            status_code=400,
+            detail="Cannot delete user while they still own assets -  please transfer or delete these assets"
+        )
+
+
     db.delete(user)
     db.commit()
 
+    return {
+        "message": "User deleted and assets transferred"
+    }
 
 def get_all_users(db):
     statement = select(User)
