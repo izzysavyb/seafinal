@@ -5,6 +5,8 @@ from app.database.database import get_db
 from app.core.deps import get_current_user
 from app.crud.user import delete_user, get_all_users, get_user_by_id, update_user
 from app.schemas.user import UserUpdate
+from app.database.models import User
+from app.core.security import hash_password
 
 
 
@@ -35,6 +37,33 @@ def get_my_account(
             status_code=404,
             detail="User not found"
         )
+
+    return user
+
+@router.put("/me")
+def update_my_account(
+    user_data: UserUpdate,
+    db: Session = Depends(get_db),
+    current_user: dict = Depends(get_current_user)
+):
+    user = db.query(User).filter(
+        User.id == current_user["id"]
+    ).first()
+
+    if not user:
+        raise HTTPException(
+            status_code=404,
+            detail="User not found"
+        )
+
+    user.username = user_data.username
+    user.email = user_data.email
+
+    if user_data.password:
+        user.password = hash_password(user_data.password)
+
+    db.commit()
+    db.refresh(user)
 
     return user
 

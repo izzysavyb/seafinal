@@ -9,6 +9,7 @@ import Users from "./pages/users";
 import EditUser from "./pages/edituser";
 import Account from "./pages/account";
 import EditAsset from "./pages/editasset";
+import EditAccount from "./pages/editaccount";
 
 export default function App() {
   return (
@@ -61,6 +62,14 @@ export default function App() {
           element={
             <ProtectedRoute allowedRoles="admin">
               <EditUser />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/account/edit"
+          element={
+            <ProtectedRoute>
+              <EditAccount />
             </ProtectedRoute>
           }
         />

@@ -1,37 +1,39 @@
-import { useState } from 'react';
-import { loginUser, registerUser } from '../api/auth';
-import { useNavigate } from 'react-router-dom';
+import { useState } from "react";
+import { loginUser, registerUser } from "../api/auth";
+import { useNavigate } from "react-router-dom";
 
 export default function Login() {
-  const [mode, setMode] = useState('login');
+  const [mode, setMode] = useState("login");
 
-  const [username, setUsername] = useState('');
+  const [username, setUsername] = useState("");
 
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState("");
 
-  const [password, setPassword] = useState('');
+  const [password, setPassword] = useState("");
 
   const navigate = useNavigate();
 
   const handleSubmit = async () => {
     try {
-      if (mode === 'login') {
+      if (mode === "login") {
         const data = await loginUser(username, password);
 
-        localStorage.setItem('token', data.access_token);
+        localStorage.setItem("token", data.access_token);
 
-        navigate('/dashboard');
+        const decodedToken = JSON.parse(atob(data.access_token.split(".")[1]));
+
+        localStorage.setItem("userId", decodedToken.id);
+
+        navigate("/dashboard");
       } else {
         await registerUser(username, email, password);
 
-        alert('Registration successful');
-
-        setMode('login');
+        alert("Registration successful");
+        setMode("login");
       }
     } catch (error) {
       console.error(error);
-
-      alert('Authentication failed');
+      alert("Authentication failed");
     }
   };
   return (
@@ -39,28 +41,28 @@ export default function Login() {
       <div className="bg-white p-8 rounded-xl shadow-md w-80">
         <div className="flex flex-col gap-3 mb-6 overflow-hidden rounded-lg">
           <button
-            onClick={() => setMode('login')}
+            onClick={() => setMode("login")}
             className={`flex-1 p-2 rounded-lg ${
-              mode === 'login' ? 'bg-pink-500 text-black' : 'bg-gray-200'
+              mode === "login" ? "bg-pink-500 text-black" : "bg-gray-200"
             }`}
           >
             Login
           </button>
 
           <button
-            onClick={() => setMode('register')}
+            onClick={() => setMode("register")}
             className={`flex-1 p-2 rounded-lg ${
-              mode === 'register' ? 'bg-pink-500 text-black' : 'bg-gray-200'
+              mode === "register" ? "bg-pink-500 text-black" : "bg-gray-200"
             }`}
           >
             Register
           </button>
         </div>
         <h2 className="text-2xl font-bold mb-6 text-center text-black-500">
-          {mode === 'login' ? 'Login' : 'Register'}
+          {mode === "login" ? "Login" : "Register"}
         </h2>
 
-        {mode === 'register' && (
+        {mode === "register" && (
           <input
             type="text"
             placeholder="Email"
@@ -90,7 +92,7 @@ export default function Login() {
           className="w-full bg-pink-500 text-black p-2 rounded hover:scale-[1.02]"
           onClick={handleSubmit}
         >
-          {mode === 'login' ? 'Log In' : 'Create Account'}
+          {mode === "login" ? "Log In" : "Create Account"}
         </button>
       </div>
     </div>

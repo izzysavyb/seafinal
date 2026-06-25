@@ -26,3 +26,11 @@ export const deleteUser = async (userId: number) => {
   const response = await api.delete(`/users/${userId}`);
   return response.data;
 };
+export const updateMyAccount = async (data: {
+  username: string;
+  email: string;
+  password?: string;
+}) => {
+  const response = await api.put("/users/me", data);
+  return response.data;
+};

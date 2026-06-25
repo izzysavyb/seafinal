@@ -54,7 +54,7 @@ export default function Account() {
               <p className="text-lg font-medium">{user.id}</p>
             </div>
             <div className="flex justify-center border-t border-pink-100 pt-3 text-gray-500 ">
-              <Link to={`/users/edit-user/${user.id}`}>
+              <Link to={"/account/edit"}>
                 <button className="flex w-20 h-10 items-center justify-center rounded-full bg-pink-50 transition-all duration-300 hover:text-pink-400/70 hover:scale-105">
                   Edit
                 </button>
