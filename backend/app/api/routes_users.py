@@ -23,6 +23,21 @@ def get_users_route(
         )
     return get_all_users(db)
 
+@router.get("/me")
+def get_my_account(
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_user)
+):
+    user = get_user_by_id(db, current_user["id"])
+
+    if not user:
+        raise HTTPException(
+            status_code=404,
+            detail="User not found"
+        )
+
+    return user
+
 @router.put("/{user_id}")
 def update_user_route(
     user_id: int,

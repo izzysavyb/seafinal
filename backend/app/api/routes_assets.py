@@ -57,8 +57,16 @@ def update_asset_route(
         Asset,
         asset_id
     )
-
- 
+    if not asset:
+        raise HTTPException(
+            status_code=404,
+            detail="Asset not found"
+        )
+    if asset.owner_id != current_user["id"]:
+        raise HTTPException(
+        status_code=403,
+        detail="Not authorized"
+    )
 
     if asset_data.name is not None:
         asset.name = asset_data.name
@@ -69,8 +77,8 @@ def update_asset_route(
     if asset_data.status is not None:
         asset.status = asset_data.status
 
-    if asset_data.owner_id is not None:
-        asset.owner_id = asset_data.owner_id
+    if asset_data.serial_number is not None:
+        asset.serial_number = asset_data.serial_number
 
     db.commit()
     db.refresh(asset)

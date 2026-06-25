@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from app.database.models import Asset, User
 from app.core.security import hash_password
 from app.core.logger import logger
+from app.schemas.user import UserUpdate
 
 def get_user_by_username(
         db: Session,
@@ -67,7 +68,7 @@ def create_user(
             
         )
 
-def update_user(db, user_id, user_data):
+def update_user(db: Session, user_id: int, user_data: UserUpdate):
     user = db.execute(
         select(User).where(User.id == user_id)
     ).scalar_one_or_none()
@@ -75,19 +76,19 @@ def update_user(db, user_id, user_data):
     if not user:
         return None
 
-    if user_data.username:
-        user.username = user_data.username
+    update_data = user_data.model_dump(exclude_unset=True)
 
-    if user_data.email:
-        user.email = user_data.email
+    if "username" in update_data:
+        user.username = update_data["username"]
 
-    if user_data.password:
-        user.password = hash_password(
-            user_data.password
-        )
+    if "email" in update_data:
+        user.email = update_data["email"]
 
-    if user_data.role:
-        user.role = user_data.role
+    if "password" in update_data:
+        user.hashed_password = hash_password(update_data["password"])
+
+    if "role" in update_data:
+        user.role = update_data["role"]
 
     db.commit()
     db.refresh(user)
@@ -95,8 +96,7 @@ def update_user(db, user_id, user_data):
     return user
 
 def delete_user(db: Session, user_id: int, current_user: dict):
-    if current_user["role"] != "admin":
-        raise HTTPException(status_code=403, detail="Admin only")
+    
 
     user = db.query(User).filter(
         User.id == user_id
@@ -107,12 +107,7 @@ def delete_user(db: Session, user_id: int, current_user: dict):
             status_code=404,
             detail="User not found"
         )
-    if user.id == current_user["id"]:
-        raise HTTPException(
-            status_code=400,
-            detail="You cannot delete yourself!"
-            
-        )
+  
 
     owned_assets = db.query(Asset).filter(Asset.owner_id == user.id).first()
 

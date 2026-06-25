@@ -1,4 +1,4 @@
-from typing import Literal
+from typing import Literal, Optional
 
 from pydantic import BaseModel, ConfigDict, EmailStr, Field
 
@@ -28,7 +28,7 @@ class UserOut(BaseModel):
     model_config =  ConfigDict (from_attributes = True)
 
 class UserUpdate(BaseModel):
-    username: str | None = None
-    email: EmailStr | None = None
-    password: str | None = None
+    username: Optional[str] = Field(None, min_length=3)
+    email: Optional[EmailStr] = None
+    password: Optional[str] | None = None
     role: Literal["admin", "user"] | None = None

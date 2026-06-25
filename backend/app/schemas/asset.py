@@ -4,20 +4,21 @@ class AssetCreate(BaseModel):
     name: str = Field(
         min_length=2,
         max_length=100
-    )
+    ) 
     category: str = Field(
         min_length=2,
         max_length=50
     )
     serial_number: str
     status: str
-    
+  
     
 
 
 class AssetUpdate(BaseModel):
     name: str | None = None
     category: str | None = None
+    serial_number: str | None = None
     status: str | None = None
     owner_id: int | None = None
 
