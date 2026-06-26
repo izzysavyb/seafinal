@@ -19,4 +19,4 @@ Software Engineering and Agile Assignment
 9. CD into the frontend and run npm i to install the dependencies
 10. Then run npm run dev
 11. Frontend can be found at this URL: http://localhost:5173
-12. Log in with account: username - admin and password - Admin123 to access admin permissons or create your own account by registering!
+12. Log in with account: username - admin and password - Admin123 to access admin permissions or create your own account by registering!
